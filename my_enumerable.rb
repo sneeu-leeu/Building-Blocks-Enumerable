@@ -7,7 +7,6 @@ module Enumerable
       yield (self[i])
       i += 1
     end
-
   end
 
   def my_each_with_index
@@ -33,25 +32,25 @@ module Enumerable
     select
   end
 
-  def my_all(arg = nil)
+  def my_all?
     my_each do |item|
       return false unless yield item
     end
     true
   end
 
-  def my_any(arg = nil)
+  def my_any?
     my_each do |item|
       return true if yield item
     end
     false
   end
 
-  def my_none(arg = nil, &block)
+  def my_none?(arg = nil, &block)
     !my_any(arg, &block)
   end
 
-  def my_count(*arg)
+  def my_count(arg = nil)
     too_manny_args_error?(arg)
     result = 0
     my_each do |idx|
@@ -66,7 +65,7 @@ module Enumerable
     result
   end
 
-  def my_map( proc = nil )
+  def my_map(proc = nil)
     return to_enum unless block_given?
 
     result = []
@@ -74,36 +73,14 @@ module Enumerable
     result
   end
 
-  def my_inject(*arg)
-    if args.size == 2
-      raise TypeError, "#{arg[1]} is not a symbol" unless arg[1].is_a?(Symbol)
-
-      my_each { |item| arg[0] = arg[0].send(arg[1], item) }
-      arg[0]
-    elsif arg.size == 1 && !block_given?
-      raise TypeError, "#{arg[0]} is not a symbol" unless arg[0].is_a?(Symbol)
-
-      anlise = first
-      drop(1).my_each {|idx| anlise = anlise.send(arg[0], idx) }
-      anlise
-    elsif arg.empty && !block_given?
-      raise LocalJumpError, "No Block Entered"
-    else
-      anlise = arg[0] || first
-      if anlise == arg[0]
-        my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-        anlise
-      else
-        drop(1).my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-        anlise
-      end
+  def my_inject(arg)
+    my_each do |anlise|
+      arg = yield(arg, anlise)
     end
+    arg
   end
-
 end
 
 def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
-
-# rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/ModuleLength, Metrics/MethodLength
