@@ -92,7 +92,7 @@ module Enumerable
   def my_inject(*arg)
     if args.size == 2
       raise TypeError, "#{arg[1]} is not a symbol" unless arg[1].is_a?(Symbol)
-  
+
       my_each { |item| arg[0] = arg[0].send(arg[1], item) }
       arg[0]
     elsif arg.size == 1 && !block_given?
@@ -114,7 +114,11 @@ module Enumerable
       end
     end
   end
+
 end
 
+def multiply_els(arr)
+  p arr.my_inject(1) { |d, v| d * v }
+end
 
 # rubocop: enable Style/CaseEquality
