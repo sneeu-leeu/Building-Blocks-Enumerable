@@ -46,6 +46,22 @@ module Enumerable
     true
   end
 
+  def my_none(arg = nil)
+    if block_given?
+      my_each.to_a {|idx| return true if yield(idx)}
+      return false
+      elsif arg.nil?
+        my_each.to_a {|idx| return true if idx}
+      elsif !arg.nil && (arg.is_a? class)
+        my_each.to_a {|idx| return true if [idx.class, idx.class.superclass].include?(arg)}
+      elsif !arg.nil && arg.class == regexp
+        my_each.to_a {|idx| return true if arg.match(idx)}
+      else
+        my_each.to_a {|idx| return true if idx == arg}
+    end
+    false
+  end
+
 
 
 
