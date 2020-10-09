@@ -2,9 +2,10 @@ module Enumerable
   def my_each
     return to_enum unless block_given?
 
-    idx = to_a
-    idx.size.times do |index|
-      yield idx[index]
+    i = 0
+    while i < size
+      yield (self[i])
+      i += 1
     end
 
   end
@@ -12,52 +13,36 @@ module Enumerable
   def my_each_with_index
     return to_enum unless block_given?
 
-    idx = to_a
-    idx.size.times do |index|
-      yield idx[index], index
+    i = 0
+    while i < size
+      yield self[i], i
+      i += 1
     end
-
+    self
   end
 
   def my_select
-    return to_enum(:my_select) unless block_given?
+    return to_enum unless block_given?
 
     select = []
-    my_each do |i|
-      select << i if yield(i)
-      select
+    i = 0
+    until i >= length
+      select << self[i] if yield self[i]
+      i += 1
     end
+    select
   end
 
   def my_all(arg = nil)
-    if block_given?
-      my_each.to_a {|idx| return false if yield(idx) == false}
-      return true
-    elsif arg.nil?
-      my_each.to_a do |idx| return false if idx = false or if idx.nil?
-
-    elsif !arg.nil && (arg.is_a? class
-      my_each.to_a {|idx| return false unless [item.class, item.class.superclass].include?(arg)}
-    elsif !arg.nil && arg.class == regexp
-      my_each.to_a {|idx| return false unless arg.match(idx)}
-    else
-      my_each.to_a {|idx| return false if idx != arg}
+    my_each do |item|
+      return false unless yield item
     end
     true
   end
 
   def my_any(arg = nil)
-    if block_given?
-      my_each.to_a {|idx| return true if yield(idx)}
-      return false
-      elsif arg.nil?
-        my_each.to_a {|idx| return true if idx}
-      elsif !arg.nil && (arg.is_a? class)
-        my_each.to_a {|idx| return true if [idx.class, idx.class.superclass].include?(arg)}
-      elsif !arg.nil && arg.class == regexp
-        my_each.to_a {|idx| return true if arg.match(idx)}
-      else
-        my_each.to_a {|idx| return true if idx == arg}
+    my_each do |item|
+      return true if yield item
     end
     false
   end
