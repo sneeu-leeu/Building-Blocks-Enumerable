@@ -46,7 +46,7 @@ module Enumerable
     true
   end
 
-  def my_none(arg = nil)
+  def my_any(arg = nil)
     if block_given?
       my_each.to_a {|idx| return true if yield(idx)}
       return false
@@ -61,6 +61,12 @@ module Enumerable
     end
     false
   end
+
+  def my_none(arg = nil, &block)
+    !my_any(arg, &block)
+  end
+
+  
 
 
 
