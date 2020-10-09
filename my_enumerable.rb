@@ -1,23 +1,22 @@
-# rubocop: disable Style/CaseEquality
 module Enumerable
   def my_each
-    return to_enum(:my_each) unless block_given?
+    return to_enum unless block_given?
 
-    i = 0
-    while i < size
-      yield (self[i])
-      i += 1
+    idx = to_a
+    idx.size.times do |index|
+      yield idx[index]
     end
+
   end
 
   def my_each_with_index
-    return to_enum(:my_each_with_index) unless block_given?
+    return to_enum unless block_given?
 
-    i = 0
-    while i < size
-      yield (self[i], i)
-      i += 1
+    idx = to_a
+    idx.size.times do |index|
+      yield idx[index], index
     end
+
   end
 
   def my_select
@@ -35,8 +34,9 @@ module Enumerable
       my_each.to_a {|idx| return false if yield(idx) == false}
       return true
     elsif arg.nil?
-      my_each.to_a {|idx| return false if idx = false or if idx.nil?}
-    elsif !arg.nil && (arg.is_a? class)
+      my_each.to_a do |idx| return false if idx = false or if idx.nil?
+
+    elsif !arg.nil && (arg.is_a? class
       my_each.to_a {|idx| return false unless [item.class, item.class.superclass].include?(arg)}
     elsif !arg.nil && arg.class == regexp
       my_each.to_a {|idx| return false unless arg.match(idx)}
@@ -121,4 +121,4 @@ def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
 
-# rubocop: enable Style/CaseEquality
+# rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/ModuleLength, Metrics/MethodLength
