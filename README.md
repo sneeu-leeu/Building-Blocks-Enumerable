@@ -1,6 +1,6 @@
 # Building-Blocks-Enumerable
 
-This project consists of an algorithm for sorting known as the bubble sort method.
+This project consists of methods in re-creating enumerables.
 ![screenshot](./image/enumerable.png)
 
 ## Project Requirements
@@ -27,7 +27,7 @@ Re-created Enumerable Methods
 
 - $ git clone https://github.com/sneeu-leeu/Building-Blocks-Enumerable
 
-- Navigate to the project folder and execute "ruby bubble_sort.rb".
+- Navigate to the project folder and execute "ruby my_enumerable.rb".
 
 
 ## Built With
