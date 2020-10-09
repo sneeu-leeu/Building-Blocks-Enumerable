@@ -66,7 +66,22 @@ module Enumerable
     !my_any(arg, &block)
   end
 
-  
+  def my_count(*arg)
+    too_manny_args_error?(arg)
+    result = 0
+    my_each do |idx|
+      if arg.size == 1
+        result += 1 if arg[0] == idx
+      elsif block_given?
+        result += 1 if yield(idx)
+      elsif arg.size.zero?
+        result += 1
+      end
+    end
+    result
+  end
+
+
 
 
 
