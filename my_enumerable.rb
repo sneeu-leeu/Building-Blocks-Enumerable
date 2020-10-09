@@ -21,6 +21,15 @@ module Enumerable
   end
 
   def my_select
+    return to_enum(:my_select) unless block_given?
+
+    select = []
+    my_each do |i|
+      select << i if yield(i)
+      select
+    end
+  end
+  
     
  
 
