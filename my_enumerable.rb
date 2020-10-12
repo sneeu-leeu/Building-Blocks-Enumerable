@@ -63,11 +63,19 @@ module Enumerable
     !my_any?(arg, &block)
   end
 
-  def my_count
-    count = 0
-    self.my_each { |val| count += 1 if yield(val)}
-    count
-  end
+  def my_count(arg=nil)
+		count = 0
+		if arg.nil? && block_given?
+			self.my_each{|value| count += 1 if yield(value)}
+			return count
+		elsif arg.nil?
+			self.my_each{|value| count += 1}
+			return count
+		else
+			self.my_each{|value| count += 1 if value == arg}
+			return count
+		end
+	end
 
   def my_map(proc = nil)
     return to_enum unless block_given?
@@ -133,28 +141,28 @@ end
 
 
 # p '5.--------my_any?--------'
-p (%w[ant bear cat].my_any? { |word| word.length >= 3 }) #=> true
-p (%w[ant bear cat].my_any? { |word| word.length >= 4 }) #=> true
-p %w[ant bear cat].my_any?(/d/) #=> false
-p [nil, true, 99].my_any?(Integer) #=> true
-p [nil, true, 99].my_any? #=> true
-p [].my_any? #=> false
+# p (%w[ant bear cat].my_any? { |word| word.length >= 3 }) #=> true
+# p (%w[ant bear cat].my_any? { |word| word.length >= 4 }) #=> true
+# p %w[ant bear cat].my_any?(/d/) #=> false
+# p [nil, true, 99].my_any?(Integer) #=> true
+# p [nil, true, 99].my_any? #=> true
+# p [].my_any? #=> false
 
 
 # p '6.--------my_none?--------'
-# (%w[ant bear cat].my_none? { |word| word.length == 5 }) #=> true
-# (%w[ant bear cat].my_none? { |word| word.length >= 4 }) #=> false
-# %w[ant bear cat].my_none?(/d/) #=> true
-# [1, 3.14, 42].my_none?(Float) #=> false
-# [].my_none? #=> true
-# [nil].my_none? #=> true
-# [nil, false].my_none? #=> true
-# [nil, false, true].my_none? #=> false
+# p (%w[ant bear cat].my_none? { |word| word.length == 5 }) #=> true
+# p (%w[ant bear cat].my_none? { |word| word.length >= 4 }) #=> false
+# p %w[ant bear cat].my_none?(/d/) #=> true
+# p [1, 3.14, 42].my_none?(Float) #=> false
+# p [].my_none? #=> true
+# p [nil].my_none? #=> true
+# p [nil, false].my_none? #=> true
+# p [nil, false, true].my_none? #=> false
 
-# p '2.-----------my_each--------------'
-# array = [1,2,3,4,56,6,7,53,23,45,1]
+# p '7.-----------my_count--------------'
+# arr = [1,2,3,4,56,6,7,53,23,45,1]
 # range = Range.new(5,50)
-# p array.my_count
-# p range.my_count
-# p array.my_count(&block )
-# p array.my_count(1)
+# p arr.my_count #=> 11
+# p range.my_count #=> 46
+# p arr.my_count(2) #=> 1
+# p (arr.my_count { |x| (x % 2).zero? }) #=> 4
