@@ -1,97 +1,148 @@
 module Enumerable
+  def range_return_array(idx)
+    if self.class == Range
+      self
+    else
+      idx
+    end
+  end
+
   def my_each
     return to_enum unless block_given?
-    for idx in self
-			yield(idx)
-		end
-		self
+
+    elements = to_a
+    elements.size.times do |n|
+      yield elements[n]
+    end
+    range_return_array(idx)
   end
 
   def my_each_with_index
     return to_enum unless block_given?
-    idx = 0
-    while idx < to_a.length
-      yield(to_a[idx], idx)
-      idx += 1
+
+    elements = to_a
+    elements.size.times do |n|
+      yield elements[n], n
     end
-    self
+    range_return_array(idx)
   end
 
   def my_select
     return to_enum unless block_given?
-
+    value = to_a
     selectArr = []
-		self.my_each {|value|
+		value.my_each do |value|
 			selectArr << value if yield(value)
-		}
-		return selectArr
+    end
+		selectArr
   end
 
-  def my_all?
-    my_each do |item|
-      return false unless yield item
+  def my_all?(args = nil)
+    if block_given?
+      to_a.my_each { |items| return false if yield(items) == false }
+      return true
+    elsif args.nil?
+      to_a.my_each { |items| return false if items == false || items.nil? }
+    elsif !args.nil? && (args.is_a? Class)
+      to_a.my_each { |item| return false unless [item.class, item.class.superclass].include?(parameter) }
+    elsif !args.nil? && args.class == Regexp
+      to_a.my_each { |item| return false unless args.match(item) }
+    else
+      to_a.my_each { |item| return false if item != args }
     end
     true
   end
 
-  def my_any?
-    my_each do |item|
-      return true if yield item
+  def my_any?(args = nil)
+    if block_given?
+      to_a.my_each { |items| return true if yield(items) }
+      return false
+    elsif args.nil?
+      to_a.my_each { |items| return true if items }
+    elsif !args.nil? && (args.is_a? Class)
+      to_a.my_each { |items| return true if [items.class, items.class.superclass].include?(parameter) }
+    elsif !args.nil? && args.class == Regexp
+      to_a.my_each { |items| return true if args.match(items) }
+    else
+      to_a.my_each { |items| return true if items == args }
     end
     false
   end
 
   def my_none?(arg = nil, &block)
-    !my_any(arg, &block)
+    !my_any?(arg, &block)
   end
 
   def my_count(arg = nil)
-    too_manny_args_error?(arg)
-    result = 0
-    my_each do |idx|
-      if arg.size == 1
-        result += 1 if arg[0] == idx
-      elsif block_given?
-        result += 1 if yield(idx)
-      elsif arg.size.zero?
-        result += 1
+    idx = to_a
+    count = 0
+    if arg
+      idx.my_each do |element|
+        count += 1 if element == arg
       end
-    end
-    result
-  end
-
-  def my_map(proc = nil)
-    return to_enum unless block_given?
-
-    result = []
-    proc.nil? ? my_each { |idx| result << yield(idx) } : my_each { |idx| result << proc.call(idx) }
-    result
-  end
-
-  def my_inject(*arg)
-    if arg.size == 2
-      raise TypeError, "#{arg[1]} is not a symbol" unless arg[1].is_a?(Symbol)
-
-      my_each { |item| arg[0] = arg[0].send(arg[1], item) }
-      arg[0]
-    elsif arg.size == 1 && !block_given?
-      raise TypeError, "#{arg[0]} is not a symbol" unless arg[0].is_a?(Symbol)
-
-      anlise = first
-      drop(1).my_each {|idx| anlise = anlise.send(arg[0], idx) }
-      anlise
-    elsif arg.empty && !block_given?
-      raise LocalJumpError, "No Block Entered"
+    elsif block_given?
+      idx.my_each do |element|
+        count += 1 if (yield element) == true
+      end
     else
-      anlise = arg[0] || first
-      if anlise == arg[0]
-        my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-        anlise
-      else
-        drop(1).my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-        anlise
+      idx.my_each do
+        count += 1
       end
     end
+    count
+  end
+
+  def my_map(arg = nil)
+    return to_enum if !block_given? && !arg
+
+    elements = clone.to_a
+    elements.my_each_with_index do |element, i|
+      elements[i] = if arg
+                      arg.call(element)
+                    else
+                      yield element
+                    end
+    end
+    elements
+  end
+
+  def my_inject(arg_first = nil, sym = nil)
+    elements = to_a
+    if arg_first && sym
+      arg = sym
+      accum = arg_first
+      elements.my_each_with_index do |element, _i|
+        accum = accum.send(arg, element)
+      end
+      return accum
+    elsif arg_first && !sym
+      arg = arg_first
+    elsif !arg_first && !sym
+      accum = nil
+      elements.my_each do |element|
+        accum = if accum.nil?
+                  element
+                else
+                  yield accum, element
+                end
+      end
+    end
+    if arg.class == Symbol
+      accum = nil
+      elements.my_each do |element|
+        accum = if accum.nil?
+                  element
+                else
+                  accum.send(arg, element)
+                end
+      end
+    elsif block_given? && arg
+      accum = arg
+      elements.my_each do |element|
+        accum = yield accum, element
+      end
+    end
+    accum
   end
 end
 
