@@ -1,14 +1,16 @@
 module Enumerable
   def my_each
     return to_enum unless block_given?
-    for idx in self
-			yield(idx)
+
+    for value in self
+			yield(value)
 		end
-		self
+		return self
   end
 
   def my_each_with_index
     return to_enum unless block_given?
+
     idx = 0
     while idx < to_a.length
       yield(to_a[idx], idx)
@@ -20,16 +22,23 @@ module Enumerable
   def my_select
     return to_enum unless block_given?
 
-    selectArr = []
-		self.my_each {|value|
-			selectArr << value if yield(value)
-		}
-		return selectArr
+    select_arr = []
+    my_each { |value| select_arr << value if yield(value) }
+    select_arr
   end
 
-  def my_all?
-    my_each do |item|
-      return false unless yield item
+  def my_all?(param = nil)
+    if block_given?
+      to_a.my_each { |value| return false if yield(value) == false }
+      return true
+    elsif param.nil?
+      to_a.my_each { |value| return false if value.nil? || value == false }
+    elsif !param.nil? && (param.is_a? Class)
+      to_a.my_each { |value| return false unless [value.class, value.class.superclass].include?(param) }
+    elsif !param.nil? && param.class == Regexp
+      to_a.my_each { |value| return false unless param.match(value) }
+    else
+      to_a.my_each { |value| return false if value != param }
     end
     true
   end
@@ -42,22 +51,13 @@ module Enumerable
   end
 
   def my_none?(arg = nil, &block)
-    !my_any(arg, &block)
+    !my_any?(arg, &block)
   end
 
-  def my_count(arg = nil)
-    too_manny_args_error?(arg)
-    result = 0
-    my_each do |idx|
-      if arg.size == 1
-        result += 1 if arg[0] == idx
-      elsif block_given?
-        result += 1 if yield(idx)
-      elsif arg.size.zero?
-        result += 1
-      end
-    end
-    result
+  def my_count
+    count = 0
+    self.my_each { |val| count += 1 if yield(val)}
+    count
   end
 
   def my_map(proc = nil)
@@ -68,33 +68,84 @@ module Enumerable
     result
   end
 
-  def my_inject(*arg)
-    if arg.size == 2
-      raise TypeError, "#{arg[1]} is not a symbol" unless arg[1].is_a?(Symbol)
-
-      my_each { |item| arg[0] = arg[0].send(arg[1], item) }
-      arg[0]
-    elsif arg.size == 1 && !block_given?
-      raise TypeError, "#{arg[0]} is not a symbol" unless arg[0].is_a?(Symbol)
-
-      anlise = first
-      drop(1).my_each {|idx| anlise = anlise.send(arg[0], idx) }
-      anlise
-    elsif arg.empty && !block_given?
-      raise LocalJumpError, "No Block Entered"
-    else
-      anlise = arg[0] || first
-      if anlise == arg[0]
-        my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-        anlise
-      else
-        drop(1).my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-        anlise
-      end
+  def my_inject
+    current = nil
+    my_each do |value|
+      current = if current.nil?
+                  value
+                else
+                  yield(current, value)
+                end
     end
+    current
   end
 end
 
 def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
+
+# p '1.-----------my_each--------------'
+# array = [1,2,3,4,56,6,7,53,23,45,1]
+# block = proc { |num| num < (1 + 9) / 2 }
+# p array.each(&block ) === array.my_each(&block )
+
+# range = Range.new(5,50)
+# block =proc { |num| num < (1 + 9) / 2 }
+# p range.my_each(&block ) === range.each(&block)
+
+
+#p '2.--------my_each_with_index--------'
+# array = [1,2,3,4,56,6,7,53,23,45,1]
+# block = proc { |num| num < (1 + 9) / 2 }
+# p array.my_each_with_index(&block ) === array.each_with_index(&block)
+
+# range = Range.new(5,50)
+# block =proc { |num| num < (1 + 9) / 2 }
+# p range.my_each_with_index(&block ) === range.each_with_index(&block)
+
+
+# p '3.-----------my_select--------------'
+# array = [1,2,3,4,56,6,7,53,23,45,1]
+# block =proc { |num| num < (1 + 9) / 2 }
+# p array.my_select(&block ) === array.select(&block)
+
+# range = Range.new(5,50)
+# block =proc { |num| num < (1 + 9) / 2 }
+# p range.my_select(&block ) === range.select(&block)
+
+
+# p '4.--------my_all--------'
+# p (%w[ant bear cat].my_all? { |word| word.length >= 3 })
+# p (%w[ant bear cat].my_all? { |word| word.length >= 4 })
+# p %w[ant bear cat].my_all?(/t/)
+# p [1, 2i, 3.14].my_all?(Numeric)
+# p [].my_all?
+
+
+# p '5.--------my_any?--------'
+# (%w[ant bear cat].my_any? { |word| word.length >= 3 }) #=> true
+# (%w[ant bear cat].my_any? { |word| word.length >= 4 }) #=> true
+# %w[ant bear cat].my_any?(/d/) #=> false
+# [nil, true, 99].my_any?(Integer) #=> true
+# [nil, true, 99].my_any? #=> true
+# [].my_any? #=> false
+
+
+# p '6.--------my_none?--------'
+# (%w[ant bear cat].my_none? { |word| word.length == 5 }) #=> true
+# (%w[ant bear cat].my_none? { |word| word.length >= 4 }) #=> false
+# %w[ant bear cat].my_none?(/d/) #=> true
+# [1, 3.14, 42].my_none?(Float) #=> false
+# [].my_none? #=> true
+# [nil].my_none? #=> true
+# [nil, false].my_none? #=> true
+# [nil, false, true].my_none? #=> false
+
+# p '2.-----------my_each--------------'
+# array = [1,2,3,4,56,6,7,53,23,45,1]
+# range = Range.new(5,50)
+# p array.my_count
+# p range.my_count
+# p array.my_count(&block )
+# p array.my_count(1)
