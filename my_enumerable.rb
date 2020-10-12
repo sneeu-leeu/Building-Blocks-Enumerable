@@ -9,11 +9,10 @@ module Enumerable
 
   def my_each_with_index
     return to_enum unless block_given?
-
-    i = 0
-    while i < size
-      yield self[i], i
-      i += 1
+    idx = 0
+    while idx < to_a.length
+      yield(to_a[idx], idx)
+      idx += 1
     end
     self
   end
