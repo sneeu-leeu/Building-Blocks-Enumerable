@@ -68,11 +68,30 @@ module Enumerable
     result
   end
 
-  def my_inject(arg)
-    my_each do |anlise|
-      arg = yield(arg, anlise)
+  def my_inject(*arg)
+    if arg.size == 2
+      raise TypeError, "#{arg[1]} is not a symbol" unless arg[1].is_a?(Symbol)
+
+      my_each { |item| arg[0] = arg[0].send(arg[1], item) }
+      arg[0]
+    elsif arg.size == 1 && !block_given?
+      raise TypeError, "#{arg[0]} is not a symbol" unless arg[0].is_a?(Symbol)
+
+      anlise = first
+      drop(1).my_each {|idx| anlise = anlise.send(arg[0], idx) }
+      anlise
+    elsif arg.empty && !block_given?
+      raise LocalJumpError, "No Block Entered"
+    else
+      anlise = arg[0] || first
+      if anlise == arg[0]
+        my_each { |idx| anlise = yield(anlise, idx) if block_given? }
+        anlise
+      else
+        drop(1).my_each { |idx| anlise = yield(anlise, idx) if block_given? }
+        anlise
+      end
     end
-    arg
   end
 end
 
