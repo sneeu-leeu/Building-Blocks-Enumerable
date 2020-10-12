@@ -20,13 +20,11 @@ module Enumerable
   def my_select
     return to_enum unless block_given?
 
-    select = []
-    i = 0
-    until i >= length
-      select << self[i] if yield self[i]
-      i += 1
-    end
-    select
+    selectArr = []
+		self.my_each {|value|
+			selectArr << value if yield(value)
+		}
+		return selectArr
   end
 
   def my_all?
