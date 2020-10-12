@@ -1,4 +1,4 @@
-module Enumerable
+module Enumerable # rubocop:todo Metrics/ModuleLength
   def range_return_array(idx)
     if self.class == Range
       self
@@ -29,15 +29,17 @@ module Enumerable
 
   def my_select
     return to_enum unless block_given?
+
     value = to_a
-    selectArr = []
-		value.my_each do |value|
-			selectArr << value if yield(value)
+    selectArr = [] # rubocop:todo Naming/VariableName
+    value.my_each do |value| # rubocop:todo Lint/ShadowingOuterLocalVariable
+      selectArr << value if yield(value) # rubocop:todo Naming/VariableName
     end
-		selectArr
+    selectArr # rubocop:todo Naming/VariableName
   end
 
-  def my_all?(args = nil)
+  # rubocop:todo Metrics/PerceivedComplexity
+  def my_all?(args = nil) # rubocop:todo Metrics/CyclomaticComplexity
     if block_given?
       to_a.my_each { |items| return false if yield(items) == false }
       return true
@@ -52,8 +54,10 @@ module Enumerable
     end
     true
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
-  def my_any?(args = nil)
+  # rubocop:todo Metrics/PerceivedComplexity
+  def my_any?(args = nil) # rubocop:todo Metrics/CyclomaticComplexity
     if block_given?
       to_a.my_each { |items| return true if yield(items) }
       return false
@@ -68,6 +72,7 @@ module Enumerable
     end
     false
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def my_none?(arg = nil, &block)
     !my_any?(arg, &block)
@@ -106,7 +111,9 @@ module Enumerable
     elements
   end
 
-  def my_inject(arg_first = nil, sym = nil)
+  # rubocop:todo Metrics/PerceivedComplexity
+  # rubocop:todo Metrics/MethodLength
+  def my_inject(arg_first = nil, sym = nil) # rubocop:todo Metrics/CyclomaticComplexity
     elements = to_a
     if arg_first && sym
       arg = sym
@@ -144,6 +151,8 @@ module Enumerable
     end
     accum
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 end
 
 def multiply_els(arr)
