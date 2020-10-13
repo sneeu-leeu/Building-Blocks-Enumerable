@@ -19,7 +19,7 @@ Re-created Enumerable Methods
 
 ## Live Demo
 
-[Demo-Link](https://repl.it/@OseunIyadi/PeacefulInternalWebpage)
+[Demo-Link](https://repl.it/@StephanAnnandal/EducatedGleamingQuote)
 
 ## Install
 
