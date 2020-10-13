@@ -1,7 +1,7 @@
-<<<<<<< HEAD
+# rubocop: disable Metrics/CyclomaticComplexity
 module Enumerable # rubocop:todo Metrics/ModuleLength
   def range_return_array(idx)
-    if self.class == Range
+    if instance_of?(Range)
       self
     else
       idx
@@ -16,32 +16,14 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
       yield elements[n]
     end
     range_return_array(idx)
-=======
-# rubocop: disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-module Enumerable
-  def my_each
-    return to_enum unless block_given?
-
-    each do |x|
-      yield(x)
-    end
-    self
->>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
   end
 
   def my_each_with_index
     return to_enum unless block_given?
 
-<<<<<<< HEAD
     elements = to_a
     elements.size.times do |n|
       yield elements[n], n
-=======
-    idx = 0
-    while idx < to_a.length
-      yield(to_a[idx], idx)
-      idx += 1
->>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
     end
     range_return_array(idx)
   end
@@ -49,7 +31,6 @@ module Enumerable
   def my_select
     return to_enum unless block_given?
 
-<<<<<<< HEAD
     value = to_a
     selectArr = [] # rubocop:todo Naming/VariableName
     value.my_each do |value| # rubocop:todo Lint/ShadowingOuterLocalVariable
@@ -60,42 +41,22 @@ module Enumerable
 
   # rubocop:todo Metrics/PerceivedComplexity
   def my_all?(args = nil) # rubocop:todo Metrics/CyclomaticComplexity
-    if block_given?
-      to_a.my_each { |items| return false if yield(items) == false }
-      return true
-    elsif args.nil?
-      to_a.my_each { |items| return false if items == false || items.nil? }
-    elsif !args.nil? && (args.is_a? Class)
-      to_a.my_each { |item| return false unless [item.class, item.class.superclass].include?(parameter) }
-    elsif !args.nil? && args.class == Regexp
-      to_a.my_each { |item| return false unless args.match(item) }
-    else
-      to_a.my_each { |item| return false if item != args }
-=======
-    select_arr = []
-    my_each { |value| select_arr << value if yield(value) }
-    select_arr
+  if block_given? # rubocop:todo Layout/IndentationWidth
+    to_a.my_each { |items| return false if yield(items) == false }
+    return true
+  elsif args.nil?
+    to_a.my_each { |items| return false if items == false || items.nil? }
+  elsif !args.nil? && (args.is_a? Class)
+    to_a.my_each { |item| return false unless [item.class, item.class.superclass].include?(parameter) }
+  elsif !args.nil? && args.instance_of?(Regexp)
+    to_a.my_each { |item| return false unless args.match(item) }
+  else
+    to_a.my_each { |item| return false if item != args }
+  end
+  true
   end
 
-  def my_all?(arg = nil)
-    if block_given?
-      to_a.my_each { |value| return false if yield(value) == false }
-      return true
-    elsif arg.nil?
-      to_a.my_each { |value| return false if value.nil? || value == false }
-    elsif !arg.nil? && (arg.is_a? Class)
-      to_a.my_each { |value| return false unless [value.class, value.class.superclass].include?(arg) }
-    elsif !arg.nil? && arg.class == Regexp
-      to_a.my_each { |value| return false unless arg.match(value) }
-    else
-      to_a.my_each { |value| return false if value != arg }
->>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
-    end
-    true
-  end
   # rubocop:enable Metrics/PerceivedComplexity
-
-<<<<<<< HEAD
   # rubocop:todo Metrics/PerceivedComplexity
   def my_any?(args = nil) # rubocop:todo Metrics/CyclomaticComplexity
     if block_given?
@@ -105,24 +66,10 @@ module Enumerable
       to_a.my_each { |items| return true if items }
     elsif !args.nil? && (args.is_a? Class)
       to_a.my_each { |items| return true if [items.class, items.class.superclass].include?(parameter) }
-    elsif !args.nil? && args.class == Regexp
+    elsif !args.nil? && args.instance_of?(Regexp)
       to_a.my_each { |items| return true if args.match(items) }
     else
       to_a.my_each { |items| return true if items == args }
-=======
-  def my_any?(arg = nil)
-    if block_given?
-      to_a.my_each { |idx| return true if yield(idx) }
-      return false
-    elsif arg.nil?
-      to_a.my_each { |idx| return true if idx }
-    elsif !arg.nil? && (arg.is_a? Class)
-      to_a.my_each { |idx| return true if [idx.class, idx.class.superclass].include?(arg) }
-    elsif !arg.nil? && arg.class == Regexp
-      to_a.my_each { |idx| return true if arg.match(idx) }
-    else
-      to_a.my_each { |idx| return true if idx == arg }
->>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
     end
     false
   end
@@ -133,7 +80,6 @@ module Enumerable
   end
 
   def my_count(arg = nil)
-<<<<<<< HEAD
     idx = to_a
     count = 0
     if arg
@@ -150,16 +96,6 @@ module Enumerable
       end
     end
     count
-=======
-    count = 0
-    if arg.nil? && block_given?
-      my_each { |value| count += 1 if yield(value) }
-    elsif arg.nil?
-      my_each { |_value| count += 1 }
-    else
-      my_each { |value| count += 1 if value == arg }
-    end
->>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
   end
 
   def my_map(arg = nil)
@@ -176,7 +112,6 @@ module Enumerable
     elements
   end
 
-<<<<<<< HEAD
   # rubocop:todo Metrics/PerceivedComplexity
   # rubocop:todo Metrics/MethodLength
   def my_inject(arg_first = nil, sym = nil) # rubocop:todo Metrics/CyclomaticComplexity
@@ -200,7 +135,7 @@ module Enumerable
                 end
       end
     end
-    if arg.class == Symbol
+    if arg.instance_of?(Symbol)
       accum = nil
       elements.my_each do |element|
         accum = if accum.nil?
@@ -216,44 +151,16 @@ module Enumerable
       end
     end
     accum
-=======
-  def my_inject(arg1 = nil, arg2 = nil)
-    array = is_a?(Array) ? self : to_a
-    symbol_ = arg1 if arg1.is_a?(Symbol) || arg1.is_a?(String)
-    actual_item = arg1 if arg1.is_a? Integer
-
-    if arg1.is_a?(Integer)
-      if arg2.is_a?(Symbol) || arg2.is_a?(String)
-        symbol_ = arg2
-      elsif !block_given?
-        raise "#{arg2} is not a symbol nor a string"
-      end
-    elsif arg1.is_a?(Symbol) || arg1.is_a?(String)
-      raise "#{arg2} is not a symbol nor a string" if !arg2.is_a?(Symbol) && !arg2.nil?
-
-      raise "undefined method `#{arg2}' for :#{arg2}:Symbol" if arg2.is_a?(Symbol) && !arg2.nil?
-    end
-
-    if symbol_
-      array.my_each { |choice| actual_item = actual_item ? actual_item.send(symbol_, choice) : choice }
-    elsif block_given?
-      array.my_each { |choice| actual_item = actual_item ? yield(actual_item, choice) : choice }
-    else
-      raise 'no block given'
-    end
-    actual_item
->>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
   end
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/PerceivedComplexity
 end
 
-# rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+# rubocop: enable Metrics/CyclomaticComplexity
 
 def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
-
 # p '1.-----------my_each--------------'
 # array = [1,2,3,4,56,6,7,53,23,45,1]
 # block = proc { |num| num < (1 + 9) / 2 }
