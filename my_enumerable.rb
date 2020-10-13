@@ -2,10 +2,12 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
   def my_each
     return to_enum(:my_each) unless block_given?
 
-    i = 0
-    while i < to_a.length
-      yield to_a[i]
-      i += 1
+    my_array = is_a?(Range) ? to_a : self
+
+    counter = 0
+    while counter < my_array.length
+      yield(my_array[counter])
+      counter += 1
     end
     self
   end
@@ -13,10 +15,12 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
-    i = 0
-    while i < to_a.length
-      yield(to_a[i], i)
-      i += 1
+    my_array = is_a?(Range) ? to_a : self
+
+    counter = 0
+    while counter < my_array.length
+      yield(my_array[counter], counter)
+      counter += 1
     end
     self
   end
@@ -37,7 +41,7 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
     elsif arguement.nil?
       to_a.my_each { |items| return false if items == false || items.nil? }
     elsif !arguement.nil? && (arguement.is_a? Class)
-      to_a.my_each { |item| return false unless [item.class, item.class.superclass].include?(parameter) }
+      to_a.my_each { |item| return false unless [item.class, item.class.superclass].include?(arguement) }
     elsif !arguement.nil? && arguement.instance_of?(Regexp)
       to_a.my_each { |item| return false unless arguement.match(item) }
     else
@@ -55,7 +59,7 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
     elsif arguement.nil?
       to_a.my_each { |items| return true if items }
     elsif !arguement.nil? && (arguement.is_a? Class)
-      to_a.my_each { |items| return true if [items.class, items.class.superclass].include?(parameter) }
+      to_a.my_each { |items| return true if [items.class, items.class.superclass].include?(arguement) }
     elsif !arguement.nil? && arguement.instance_of?(Regexp)
       to_a.my_each { |items| return true if arguement.match(items) }
     else
@@ -134,69 +138,3 @@ end
 def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
-# p '1.-----------my_each--------------'
-array = [1, 2, 3, 4, 56, 6, 7, 53, 23, 45, 1]
-block = proc { |num| num < (1 + 9) / 2 }
-p array.each(&block) === array.my_each(&block) # rubocop:todo Style/CaseEquality
-
-range = Range.new(5, 50)
-block = proc { |num| num < (1 + 9) / 2 }
-p range.my_each(&block) === range.each(&block) # rubocop:todo Style/CaseEquality
-
-# p '2.--------my_each_with_index--------'
-
-# array = [1,2,3,4,56,6,7,53,23,45,1]
-# block = proc { |num| num < (1 + 9) / 2 }
-# p array.my_each_with_index(&block ) === array.each_with_index(&block)
-
-# range = Range.new(5,50)
-# block =proc { |num| num < (1 + 9) / 2 }
-# p range.my_each_with_index(&block ) === range.each_with_index(&block)
-
-# p '3.-----------my_select--------------'
-# array = [1,2,3,4,56,6,7,53,23,45,1]
-# block =proc { |num| num < (1 + 9) / 2 }
-# p array.my_select(&block ) === array.select(&block)
-
-# range = Range.new(5,50)
-# block =proc { |num| num < (1 + 9) / 2 }
-# p range.my_select(&block ) === range.select(&block)
-
-# p '4.--------my_all--------'
-# p (%w[ant bear cat].my_all? { |word| word.length >= 3 })
-# p (%w[ant bear cat].my_all? { |word| word.length >= 4 })
-# p %w[ant bear cat].my_all?(/t/)
-# p [1, 2i, 3.14].my_all?(Numeric)
-# p [].my_all?
-
-# p '5.--------my_any?--------'
-# p (%w[ant bear cat].my_any? { |word| word.length >= 3 }) #=> true
-# p (%w[ant bear cat].my_any? { |word| word.length >= 4 }) #=> true
-# p %w[ant bear cat].my_any?(/d/) #=> false
-# p [nil, true, 99].my_any?(Integer) #=> true
-# p [nil, true, 99].my_any? #=> true
-# p [].my_any? #=> false
-
-# p '6.--------my_none?--------'
-# p (%w[ant bear cat].my_none? { |word| word.length == 5 }) #=> true
-# p (%w[ant bear cat].my_none? { |word| word.length >= 4 }) #=> false
-# p %w[ant bear cat].my_none?(/d/) #=> true
-# p [1, 3.14, 42].my_none?(Float) #=> false
-# p [].my_none? #=> true
-# p [nil].my_none? #=> true
-# p [nil, false].my_none? #=> true
-# p [nil, false, true].my_none? #=> false
-
-# p '7.-----------my_count--------------'
-# arr = [1,2,3,4,56,6,7,53,23,45,1]
-# range = Range.new(5,50)
-# p arr.my_count #=> 11
-# p range.my_count #=> 46
-# p arr.my_count(2) #=> 1
-# p (arr.my_count { |x| (x % 2).zero? }) #=> 4
-
-# puts '9.--------my_inject--------'
-# p(1..5).my_inject { |sum, n| sum + n }
-# p(1..5).my_inject(1) { |product, n| product * n }
-# longest = %w[ant bear cat].my_inject { |memo, word| memo.length > word.length ? memo : word }
-# puts longest #=> "bear"
