@@ -1,18 +1,24 @@
 module Enumerable # rubocop:todo Metrics/ModuleLength
-  def my_each(&block)
-    return unless block_given?
+  def my_each
+    return to_enum(:my_each) unless block_given?
 
-    each(&block)
+    i = 0
+    while i < to_a.length
+      yield to_a[i]
+      i += 1
+    end
+    self
   end
 
   def my_each_with_index
-    return unless block_given?
+    return to_enum(:my_each_with_index) unless block_given?
 
-    idx = 0
-    each do |i|
-      yield i, idx
-      idx += 1
+    i = 0
+    while i < to_a.length
+      yield(to_a[i], i)
+      i += 1
     end
+    self
   end
 
   def my_select
@@ -129,13 +135,13 @@ def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
 # p '1.-----------my_each--------------'
-# array = [1,2,3,4,56,6,7,53,23,45,1]
-# block = proc { |num| num < (1 + 9) / 2 }
-# p array.each(&block ) === array.my_each(&block )
+array = [1, 2, 3, 4, 56, 6, 7, 53, 23, 45, 1]
+block = proc { |num| num < (1 + 9) / 2 }
+p array.each(&block) === array.my_each(&block) # rubocop:todo Style/CaseEquality
 
-# range = Range.new(5,50)
-# block =proc { |num| num < (1 + 9) / 2 }
-# p range.my_each(&block ) === range.each(&block)
+range = Range.new(5, 50)
+block = proc { |num| num < (1 + 9) / 2 }
+p range.my_each(&block) === range.each(&block) # rubocop:todo Style/CaseEquality
 
 # p '2.--------my_each_with_index--------'
 
@@ -190,7 +196,7 @@ end
 # p (arr.my_count { |x| (x % 2).zero? }) #=> 4
 
 # puts '9.--------my_inject--------'
-p(1..5).my_inject { |sum, n| sum + n }
-p(1..5).my_inject(1) { |product, n| product * n }
-longest = %w[ant bear cat].my_inject { |memo, word| memo.length > word.length ? memo : word }
-puts longest #=> "bear"
+# p(1..5).my_inject { |sum, n| sum + n }
+# p(1..5).my_inject(1) { |product, n| product * n }
+# longest = %w[ant bear cat].my_inject { |memo, word| memo.length > word.length ? memo : word }
+# puts longest #=> "bear"
