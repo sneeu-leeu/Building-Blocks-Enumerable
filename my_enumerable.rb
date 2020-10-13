@@ -9,11 +9,7 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
       yield(my_array[counter])
       counter += 1
     end
-<<<<<<< HEAD
-    range_return_array(n)
-=======
     self
->>>>>>> 1aaa3d1b7d8eddb8fd05a87f7d3fadab50150397
   end
 
   def my_each_with_index
