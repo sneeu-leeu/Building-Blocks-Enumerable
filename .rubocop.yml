@@ -1,4 +1,5 @@
 AllCops:
+  NewCops: enable
   Exclude:
     - "Guardfile"
     - "Rakefile"
@@ -8,7 +9,7 @@ AllCops:
 Layout/LineLength:
   Max: 120
 Metrics/MethodLength:
-  Max: 50
+  Max: 20
 Metrics/AbcSize:
   Max: 50
 Metrics/ClassLength:

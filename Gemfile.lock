@@ -26,4 +26,8 @@ DEPENDENCIES
   rubocop (~> 0.81.0)
 
 BUNDLED WITH
+<<<<<<< HEAD
+   2.1.2
+=======
    2.1.4
+>>>>>>> 9a5feb02e04d7d8adb42d4e169a7c5ff4de72d89
