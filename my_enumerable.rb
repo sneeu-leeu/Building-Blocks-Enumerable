@@ -3,7 +3,7 @@ module Enumerable
   def my_each
     return to_enum unless block_given?
 
-    for x in self
+    each do |x|
       yield(x)
     end
     self
@@ -83,31 +83,32 @@ module Enumerable
     result
   end
 
-  # def my_inject(*arg)
-  #   if arg.size == 2
-  #     raise TypeError, "#{arg[1]} is not a symbol" unless arg[1].is_a?(Symbol)
+  def my_inject(arg1 = nil, arg2 = nil)
+    array = is_a?(Array) ? self : to_a
+    symbol_ = arg1 if arg1.is_a?(Symbol) || arg1.is_a?(String)
+    actual_item = arg1 if arg1.is_a? Integer
 
-  #     my_each { |item| arg[0] = arg[0].send(arg[1], item) }
-  #     arg[0]
-  #   elsif arg.size == 1 && !block_given?
-  #     raise TypeError, "#{arg[0]} is not a symbol" unless arg[0].is_a?(Symbol)
+    if arg1.is_a?(Integer)
+      if arg2.is_a?(Symbol) || arg2.is_a?(String)
+        symbol_ = arg2
+      elsif !block_given?
+        raise "#{arg2} is not a symbol nor a string"
+      end
+    elsif arg1.is_a?(Symbol) || arg1.is_a?(String)
+      raise "#{arg2} is not a symbol nor a string" if !arg2.is_a?(Symbol) && !arg2.nil?
 
-  #     anlise = first
-  #     drop(1).my_each {|idx| anlise = anlise.send(arg[0], idx) }
-  #     anlise
-  #   elsif arg.empty && !block_given?
-  #     raise LocalJumpError, "No Block Entered"
-  #   else
-  #     anlise = arg[0] || first
-  #     if anlise == arg[0]
-  #       my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-  #       anlise
-  #     else
-  #       drop(1).my_each { |idx| anlise = yield(anlise, idx) if block_given? }
-  #       anlise
-  #     end
-  #   end
-  # end
+      raise "undefined method `#{arg2}' for :#{arg2}:Symbol" if arg2.is_a?(Symbol) && !arg2.nil?
+    end
+
+    if symbol_
+      array.my_each { |choice| actual_item = actual_item ? actual_item.send(symbol_, choice) : choice }
+    elsif block_given?
+      array.my_each { |choice| actual_item = actual_item ? yield(actual_item, choice) : choice }
+    else
+      raise 'no block given'
+    end
+    actual_item
+  end
 end
 
 # rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
@@ -176,3 +177,9 @@ end
 # p range.my_count #=> 46
 # p arr.my_count(2) #=> 1
 # p (arr.my_count { |x| (x % 2).zero? }) #=> 4
+
+# puts '9.--------my_inject--------'
+p(1..5).my_inject { |sum, n| sum + n }
+p(1..5).my_inject(1) { |product, n| product * n }
+longest = %w[ant bear cat].my_inject { |memo, word| memo.length > word.length ? memo : word }
+puts longest #=> "bear"
