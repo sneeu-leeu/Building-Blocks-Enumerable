@@ -15,7 +15,7 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
     elements.size.times do |n|
       yield elements[n]
     end
-    range_return_array(idx)
+    range_return_array(n)
   end
 
   def my_each_with_index
@@ -223,7 +223,7 @@ end
 # p (arr.my_count { |x| (x % 2).zero? }) #=> 4
 
 # puts '9.--------my_inject--------'
-p(1..5).my_inject { |sum, n| sum + n }
-p(1..5).my_inject(1) { |product, n| product * n }
-longest = %w[ant bear cat].my_inject { |memo, word| memo.length > word.length ? memo : word }
-puts longest #=> "bear"
+# p(1..5).my_inject { |sum, n| sum + n }
+# p(1..5).my_inject(1) { |product, n| product * n }
+# longest = %w[ant bear cat].my_inject { |memo, word| memo.length > word.length ? memo : word }
+# puts longest #=> "bear"
