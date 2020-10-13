@@ -2,7 +2,7 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
   def my_each
     return to_enum(:my_each) unless block_given?
 
-    my_array = is_a?(Range) ? to_a : self
+    my_array = to_a
 
     counter = 0
     while counter < my_array.length
@@ -15,7 +15,7 @@ module Enumerable # rubocop:todo Metrics/ModuleLength
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
 
-    my_array = is_a?(Range) ? to_a : self
+    my_array = to_a
 
     counter = 0
     while counter < my_array.length
@@ -138,3 +138,15 @@ end
 def multiply_els(arr)
   p arr.my_inject(1) { |d, v| d * v }
 end
+
+my_each_with_index_output = ''
+block = proc { |num, idx| my_each_with_index_output += "Num: #{num}, idx: #{idx}\n" }
+hash = { a: 1, b: 2, c: 3, d: 4, e: 5 }
+p hash.each_with_index(&block)
+p my_each_with_index_output
+
+each_with_index_output = my_each_with_index_output.dup
+my_each_with_index_output = ''
+p hash.my_each_with_index(&block)
+p my_each_with_index_output
+p my_each_with_index_output == each_with_index_output
