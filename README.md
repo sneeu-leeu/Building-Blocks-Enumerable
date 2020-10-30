@@ -43,9 +43,9 @@ Re-created Enumerable Methods
 -   Twitter: [@Stephan07484055](https://twitter.com/Stephan07484055)
 -   Linkedin: [Stephan Annandale](https://www.linkedin.com/in/stephan-annandale-a4b4931a9/)
 
--   Github: [@githubhandle](https://github.com/emmanuellekamwa)
--   Twitter: [@twitterhandle](https://twitter.com/AlixKamwa)
--   Linkedin: [linkedin](https://linkedin.com/in/emmanuelle-kamwa-86145a1a4/)
+-   Github: [@emmanuellekamwa](https://github.com/emmanuellekamwa)
+-   Twitter: [@AlixKamwa](https://twitter.com/AlixKamwa)
+-   Linkedin: [emmanuelle-kamwa](https://linkedin.com/in/emmanuelle-kamwa-86145a1a4/)
 
 ## Show your support
 
