@@ -127,3 +127,29 @@ Rspec.describe Enumerable do
       end
     end
   end
+  describe '#my_inject' do
+    context 'an argument is given and the argument is a symbol' do
+      it 'Should return the operation based on the symbol' do
+        expect(inject_arr.my_inject(:+)).to eql(inject_arr.inject(:+))
+        expect(inject_arr.my_inject(:*)).to eql(inject_arr.inject(:*))
+      end
+    end
+    context 'Two arguments are given, one is a symbol and the other is number.' do
+      it 'Should return the operation based on the symbol and starting from the initial number' do
+        expect(inject_arr.my_inject(5, :+)).to eql(inject_arr.inject(5, :+))
+        expect(inject_arr.my_inject(5, :*)).to eql(inject_arr.inject(5, :*))
+      end
+    end
+    context 'One argument is given with a block, and it is a number' do
+      it 'Should return the operation based on the number and the block' do
+        expect(inject_arr.my_inject(1) { |number, n| number + n }).to eql(inject_arr.inject(1) { |number, n| number + n })
+        expect(inject_arr.my_inject(1) { |number, n| number * n }).to eql(inject_arr.inject(1) { |number, n| number * n })
+      end
+    end
+    context 'The block is given' do
+      it 'Should return the operation based on the block' do
+        expect(inject_arr.my_inject { |par1, par2| par1 > par2 ? par1 : par2 })
+      end
+    end
+  end
+end
