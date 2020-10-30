@@ -76,3 +76,54 @@ Rspec.describe Enumerable do
       end
     end
   end
+
+  describe '#my_none?' do
+    context 'a block is given' do
+      it 'should return true if none of the elements its true' do
+        expect(none.my_none? { |word| word.length >= 5 }).to eql(none.none? { |word| word.length >= 5 })
+      end
+    end
+    context 'An argument is given without a block' do
+      it 'Should return true if none of the elements include the argument' do
+        expect(none.my_none?(/y/)).to eql(none.none?(/y/))
+      end
+    end
+    context 'No argument is given' do
+      it 'Should return true if none of the elements is truthy' do
+        expect(none_array.my_none?).to eql(none_array.none?)
+      end
+    end
+  end
+
+  describe '#my_count' do
+    context 'a block is given' do
+      it 'should return the count of the element that pass the condition' do
+        expect(count_arr.my_count(&:even?)).to eql(count_arr.count(&:even?))
+      end
+    end
+
+    context 'an argument is given without a block' do
+      it 'should return the count of the given argument' do
+        expect(count_arr.my_count(4)).to eql(count_arr.count(4))
+      end
+    end
+
+    context 'neither argument or block is given' do
+      it 'should return the length of the array' do
+        expect(count_arr.my_count).to eql(count_arr.count)
+      end
+    end
+  end
+
+  describe '#my_map' do
+    context 'a block is given' do
+      it 'should return the element that satisfy the condition' do
+        expect(arr.my_map(&:even?)).to eql(arr.map(&:even?))
+      end
+    end
+    context 'a block is not given' do
+      it 'should return the enumerable' do
+        expect(arr.my_map.is_a?(Enumerable)).to eql(arr.map.is_a?(Enumerable))
+      end
+    end
+  end
