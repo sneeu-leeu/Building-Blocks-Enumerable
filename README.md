@@ -6,16 +6,16 @@ This project consists of methods in re-creating enumerables.
 ## Project Requirements
 
 Re-created Enumerable Methods
-- my_each
-- my_each_with_index
-- my_all?
-- my_none?
-- my_select
-- my_any
-- my_count
-- my_inject
-- my_map
 
+-   my_each
+-   my_each_with_index
+-   my_all?
+-   my_none?
+-   my_select
+-   my_any
+-   my_count
+-   my_inject
+-   my_map
 
 ## Live Demo
 
@@ -23,16 +23,15 @@ Re-created Enumerable Methods
 
 ## Install
 
-- [Download](Clone the repository to your machine)
+-   [Download](Clone the repository to your machine)
 
-- $ git clone https://github.com/sneeu-leeu/Building-Blocks-Enumerable
+-   \$ git clone https://github.com/sneeu-leeu/Building-Blocks-Enumerable
 
-- Navigate to the project folder and execute "ruby my_enumerable.rb".
-
+-   Navigate to the project folder and execute "ruby my_enumerable.rb".
 
 ## Built With
 
-- Ruby
+-   Ruby
 
 ## Dependencies
 
@@ -40,20 +39,18 @@ Re-created Enumerable Methods
 
 ## 👤 Authors
 
-- Github: [@sneeu-leeu](https://github.com/sneeu-leeu)
-- Twitter: [@Stephan07484055](https://twitter.com/Stephan07484055)
-- Linkedin: [Stephan Annandale](https://www.linkedin.com/in/stephan-annandale-a4b4931a9/)
+-   Github: [@sneeu-leeu](https://github.com/sneeu-leeu)
+-   Twitter: [@Stephan07484055](https://twitter.com/Stephan07484055)
+-   Linkedin: [Stephan Annandale](https://www.linkedin.com/in/stephan-annandale-a4b4931a9/)
 
-- Github: [@CornerstoneII](https://github.com/CornerstoneII)
-- Twitter: [@It_Iz_I](https://twitter.com/It_Iz_I)
-- Linkedin: [Oluwaseun Iyadi](https://www.linkedin.com/in/oluwaseun-iyadi-773584b4/)
+-   Github: [@githubhandle](https://github.com/emmanuellekamwa)
+-   Twitter: [@twitterhandle](https://twitter.com/AlixKamwa)
+-   Linkedin: [linkedin](https://linkedin.com/in/emmanuelle-kamwa-86145a1a4/)
 
 ## Show your support
 
 Give a ⭐️ if you like this project!
 
-
 ## 📝 License
 
 This project is [MIT](lic.url) licensed.
-
