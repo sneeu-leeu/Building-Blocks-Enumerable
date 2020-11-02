@@ -26,8 +26,7 @@ RSpec.describe Enumerable do
   describe '#my_each_with_index' do
     context 'a block is given' do
       it 'should return the element and the index of an array' do
-        expect(hashh.my_each_with_index { |name, index| "#{name}, #{index}" }).to
-        eql(hashh.each_with_index { |name, index| "#{name}, #{index}" })
+        expect(hashh.my_each_with_index { |name, index| "#{name}, #{index}" }).to eql(hashh.each_with_index { |name, index| "#{name}, #{index}" })
       end
     end
   end
@@ -145,10 +144,8 @@ RSpec.describe Enumerable do
     end
     context 'One argument is given with a block, and it is a initial' do
       it 'SHould return the operation based on the initial and the block' do
-        expect(inject_arr.my_inject(1) { |number, n| number + n }).to
-        eql(inject_arr.inject(1) { |number, n| number + n })
-        expect(inject_arr.my_inject(1) { |number, n| number * n }).to
-        eql(inject_arr.inject(1) { |number, n| number * n })
+        expect(inject_arr.my_inject(1) { |number, n| number + n }).to eql(inject_arr.inject(1) { |number, n| number + n })
+        expect(inject_arr.my_inject(1) { |number, n| number * n }).to eql(inject_arr.inject(1) { |number, n| number * n })
       end
     end
     context 'The block is given' do
